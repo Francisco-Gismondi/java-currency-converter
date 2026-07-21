@@ -1,0 +1,14 @@
+# Archivos de configuración de credenciales (¡MUY IMPORTANTE!)
+src/config.properties
+config.properties
+
+# Carpetas compiladas de Maven
+target/
+
+# Archivos de configuración locales de Eclipse
+.settings/
+.project
+.classpath
+
+# Archivos de compilación de Java
+*.class

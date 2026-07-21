@@ -1,0 +1,7 @@
+src/config.properties
+config.properties
+target/
+.settings/
+.project
+.classpath
+*.class
