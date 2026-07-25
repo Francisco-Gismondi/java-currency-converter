@@ -6,10 +6,14 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -29,33 +33,53 @@ public class MainWindow {
 	private JTextField resultField;
 	private JComboBox<String> sourceCurrencyBox;
 	private JComboBox<String> targetCurrencyBox;
-
 	private ConversionService conversionService;
+	private JMenuItem themeMenuItem;
 
 	public MainWindow() {
 		this.conversionService = new ConversionService();
 		initComponents();
 		setupListeners();
-		this.frame.setVisible(true);
-		this.frame.setResizable(false);
-	}
 
+		this.frame.setResizable(false);
+		this.frame.setVisible(true);
+	}
 
 	private void initComponents() {
 		frame = new JFrame("Currency Converter");
-		frame.setSize(600, 500);
+		frame.setSize(480, 260);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLocationRelativeTo(null);
+
+		try {
+			java.net.URL iconURL = getClass().getResource("/icon.png");
+			if (iconURL != null) {
+				ImageIcon icon = new ImageIcon(iconURL);
+				frame.setIconImage(icon.getImage());
+			} else {
+				System.out.println("No se encontró el archivo de icono.");
+			}
+		} catch (Exception e) {
+			System.out.println("Error al cargar el icono: " + e.getMessage());
+		}
+
+		JMenuBar menuBar = new JMenuBar();
+		JMenu optionsMenu = new JMenu("Settings");
+		themeMenuItem = new JMenuItem("Light mode");
+
+		optionsMenu.add(themeMenuItem);
+		menuBar.add(optionsMenu);
+		frame.setJMenuBar(menuBar);
 
 		mainPanel = new JPanel(new BorderLayout(20, 20));
 		mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
-		formPanel = new JPanel(new GridLayout(5, 2, 15, 5));
-
 		String[] currencyList = CurrencyLoader.obtenerMonedasFormateadas();
+
+		formPanel = new JPanel(new GridLayout(5, 2, 15, 5));
 
 		sourceCurrencyBox = new JComboBox<>(currencyList);
 		targetCurrencyBox = new JComboBox<>(currencyList);
+
 		amountField = new JTextField();
 		resultField = new JTextField();
 		resultField.setEditable(false);
@@ -79,10 +103,12 @@ public class MainWindow {
 		formPanel.add(convertButton);
 		formPanel.add(exitButton);
 
-		mainPanel.add(formPanel, BorderLayout.CENTER);
-		frame.add(mainPanel);
-	}
+		mainPanel.add(formPanel, BorderLayout.NORTH);
 
+		frame.add(mainPanel);
+
+		frame.setLocationRelativeTo(null);
+	}
 
 	private void setupListeners() {
 
@@ -98,6 +124,18 @@ public class MainWindow {
 					e.consume();
 				}
 			}
+		});
+
+		themeMenuItem.addActionListener(e -> {
+
+			ThemeManager.toggleTheme(frame);
+
+			if (ThemeManager.isDarkMode()) {
+				themeMenuItem.setText("Light mode");
+			} else {
+				themeMenuItem.setText("Dark mode");
+			}
+
 		});
 	}
 
