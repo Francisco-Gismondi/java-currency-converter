@@ -1,5 +1,7 @@
 package service;
 
+import java.util.Map;
+
 import api.ExchangeRateClient;
 import model.ExchangeRateResponse;
 
@@ -7,20 +9,43 @@ public class ConversionService {
 
 	private ExchangeRateClient apiClient;
 
+	private Map<String, Double> ratesCache;
+
+	private final String BASE_CURRENCY = "USD";
+
 	public ConversionService() {
 		this.apiClient = new ExchangeRateClient();
+		loadRates();
 	}
 
-	public double convert(String baseCurrency, String targetCurrency, double amount) {
-		
-		ExchangeRateResponse response = apiClient.getRates(baseCurrency.toUpperCase());
+	private void loadRates() {
+		System.out.println("Descargando tasas de cambio (Base: " + BASE_CURRENCY + ")...");
+		ExchangeRateResponse response = apiClient.getRates(BASE_CURRENCY);
+		this.ratesCache = response.getConversionRates();
+	}
 
-		Double rate = response.getConversionRates().get(targetCurrency.toUpperCase());
+	public double convert(String fromCurrency, String toCurrency, double amount) {
+		fromCurrency = fromCurrency.toUpperCase();
+		toCurrency = toCurrency.toUpperCase();
 
-		if (rate == null) {
-			throw new IllegalArgumentException(
-					"La moneda destino '" + targetCurrency + "' no existe o no es soportada.");
+		if (!ratesCache.containsKey(fromCurrency)) {
+			throw new IllegalArgumentException("Moneda de origen no soportada: " + fromCurrency);
 		}
-		return amount * rate;
+		if (!ratesCache.containsKey(toCurrency)) {
+			throw new IllegalArgumentException("Moneda de destino no soportada: " + toCurrency);
+		}
+
+		double fromRate = ratesCache.get(fromCurrency);
+		double toRate = ratesCache.get(toCurrency);
+
+		double amountInUsd = amount / fromRate;
+
+		double finalResult = amountInUsd * toRate;
+
+		return finalResult;
+	}
+
+	public void refreshRates() {
+		loadRates();
 	}
 }
