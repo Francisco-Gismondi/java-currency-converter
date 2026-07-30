@@ -1,10 +1,15 @@
 package main;
 
-import view.*;
+import javax.swing.SwingUtilities;
+
+import view.MainWindow;
+import view.ThemeManager;
 
 public class Main {
-	public static void main(String[] args) {
-		ConsoleMenu menu = new ConsoleMenu();
-		menu.start();
-	}
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            ThemeManager.applyTheme();
+            MainWindow window = new MainWindow();
+        });
+    }
 }
