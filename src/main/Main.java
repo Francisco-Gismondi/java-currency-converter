@@ -1,16 +1,15 @@
 package main;
 
 import javax.swing.SwingUtilities;
-import view.*;
+
+import view.MainWindow;
+import view.ThemeManager;
 
 public class Main {
-	public static void main(String[] args) {
-
-		SwingUtilities.invokeLater(() -> {
-			
-			ThemeManager.applyTheme();
-			MainWindow ventana = new MainWindow();
-
-		});
-	}
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            ThemeManager.applyTheme();
+            MainWindow window = new MainWindow();
+        });
+    }
 }

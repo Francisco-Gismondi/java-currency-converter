@@ -3,35 +3,35 @@ package util;
 import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class CurrencyLoader {
-	public static String[] obtenerMonedasFormateadas() {
-		String rutaArchivo = "currencies.json";
-		List<String> listaMonedas = new ArrayList<>();
+    public static String[] getFormattedCurrencies() {
+        String filePath = "currencies.json";
+        List<String> currencyList = new ArrayList<>();
 
-		try (FileReader reader = new FileReader(rutaArchivo)) {
-			Gson gson = new Gson();
+        try (FileReader reader = new FileReader(filePath)) {
+            Gson gson = new Gson();
 
-			Type tipoMapa = new TypeToken<Map<String, String>>() {
-			}.getType();
-			Map<String, String> monedas = gson.fromJson(reader, tipoMapa);
+            Type currencyType = new TypeToken<Map<String, String>>() {
+            }.getType();
+            Map<String, String> currencies = gson.fromJson(reader, currencyType);
 
-			for (Map.Entry<String, String> entry : monedas.entrySet()) {
-				String codigo = entry.getKey();
-				String nombre = entry.getValue();
-				String opcion = codigo + " - " + nombre;
-				listaMonedas.add(opcion);
-			}
+            for (Map.Entry<String, String> entry : currencies.entrySet()) {
+                String code = entry.getKey();
+                String name = entry.getValue();
+                String option = code + " - " + name;
+                currencyList.add(option);
+            }
+        } catch (Exception e) {
+            System.out.println("Error reading the JSON file: " + e.getMessage());
+            e.printStackTrace();
+        }
 
-		} catch (Exception e) {
-			System.out.println("Error al leer el archivo JSON: " + e.getMessage());
-			e.printStackTrace();
-		}
-
-		return listaMonedas.toArray(new String[0]);
-	}
+        return currencyList.toArray(new String[0]);
+    }
 }

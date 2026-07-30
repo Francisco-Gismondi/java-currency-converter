@@ -6,25 +6,21 @@ import java.util.Properties;
 
 public class ConfigReader {
 
-	private ConfigReader() {
-	}
+    private ConfigReader() {
+    }
 
-	public static String getApiKey() {
-		Properties properties = new Properties();
+    public static String getApiKey() {
+        Properties properties = new Properties();
 
-		try (InputStream inputStream = ConfigReader.class.getClassLoader().getResourceAsStream("config.properties")) {
+        try (InputStream inputStream = ConfigReader.class.getClassLoader().getResourceAsStream("config.properties")) {
+            if (inputStream == null) {
+                throw new RuntimeException("Could not find the config.properties file at the project root.");
+            }
 
-			if (inputStream == null) {
-				throw new RuntimeException(
-						"No se pudo encontrar el archivo config.properties en la raíz del proyecto.");
-			}
-
-			properties.load(inputStream);
-
-			return properties.getProperty("api.key");
-
-		} catch (IOException e) {
-			throw new RuntimeException("Error al leer el archivo de configuración: " + e.getMessage(), e);
-		}
-	}
+            properties.load(inputStream);
+            return properties.getProperty("api.key");
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading the configuration file: " + e.getMessage(), e);
+        }
+    }
 }

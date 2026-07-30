@@ -7,45 +7,42 @@ import model.ExchangeRateResponse;
 
 public class ConversionService {
 
-	private ExchangeRateClient apiClient;
+    private final ExchangeRateClient apiClient;
+    private Map<String, Double> ratesCache;
+    private final String BASE_CURRENCY = "USD";
 
-	private Map<String, Double> ratesCache;
+    public ConversionService() {
+        this.apiClient = new ExchangeRateClient();
+        loadRates();
+    }
 
-	private final String BASE_CURRENCY = "USD";
+    private void loadRates() {
+        System.out.println("Downloading exchange rates (Base: " + BASE_CURRENCY + ")...");
+        ExchangeRateResponse response = apiClient.getRates(BASE_CURRENCY);
+        this.ratesCache = response.getConversionRates();
+    }
 
-	public ConversionService() {
-		this.apiClient = new ExchangeRateClient();
-		loadRates();
-	}
+    public double convert(String fromCurrency, String toCurrency, double amount) {
+        fromCurrency = fromCurrency.toUpperCase();
+        toCurrency = toCurrency.toUpperCase();
 
-	private void loadRates() {
-		System.out.println("Descargando tasas de cambio (Base: " + BASE_CURRENCY + ")...");
-		ExchangeRateResponse response = apiClient.getRates(BASE_CURRENCY);
-		this.ratesCache = response.getConversionRates();
-	}
+        if (!ratesCache.containsKey(fromCurrency)) {
+            throw new IllegalArgumentException("Unsupported source currency: " + fromCurrency);
+        }
+        if (!ratesCache.containsKey(toCurrency)) {
+            throw new IllegalArgumentException("Unsupported target currency: " + toCurrency);
+        }
 
-	public double convert(String fromCurrency, String toCurrency, double amount) {
-		fromCurrency = fromCurrency.toUpperCase();
-		toCurrency = toCurrency.toUpperCase();
+        double fromRate = ratesCache.get(fromCurrency);
+        double toRate = ratesCache.get(toCurrency);
 
-		if (!ratesCache.containsKey(fromCurrency)) {
-			throw new IllegalArgumentException("Moneda de origen no soportada: " + fromCurrency);
-		}
-		if (!ratesCache.containsKey(toCurrency)) {
-			throw new IllegalArgumentException("Moneda de destino no soportada: " + toCurrency);
-		}
+        double amountInUsd = amount / fromRate;
+        double finalResult = amountInUsd * toRate;
 
-		double fromRate = ratesCache.get(fromCurrency);
-		double toRate = ratesCache.get(toCurrency);
+        return finalResult;
+    }
 
-		double amountInUsd = amount / fromRate;
-
-		double finalResult = amountInUsd * toRate;
-
-		return finalResult;
-	}
-
-	public void refreshRates() {
-		loadRates();
-	}
+    public void refreshRates() {
+        loadRates();
+    }
 }
