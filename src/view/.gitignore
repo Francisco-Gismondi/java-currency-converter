@@ -1,14 +1,14 @@
-# Archivos de configuración de credenciales (¡MUY IMPORTANTE!)
+# Sensitive credential configuration files (VERY IMPORTANT!)
 src/config.properties
 config.properties
 
-# Carpetas compiladas de Maven
+# Maven build output folders
 target/
 
-# Archivos de configuración locales de Eclipse
+# Local Eclipse configuration files
 .settings/
 .project
 .classpath
 
-# Archivos de compilación de Java
+# Java build output files
 *.class

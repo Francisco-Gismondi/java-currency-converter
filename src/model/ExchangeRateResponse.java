@@ -1,24 +1,18 @@
 package model;
 
 import java.util.Map;
-import com.google.gson.annotations.SerializedName;
 
 public class ExchangeRateResponse {
 
-	@SerializedName("base_code")
-	private String baseCode;
-    @SerializedName("conversion_rates")
-    private Map<String, Double> conversionRates;
-    
-    public ExchangeRateResponse() {
-    }
+	private Map<String, Double> conversion_rates;
 
-	public String getBaseCode() {
-		return baseCode;
-	}
+	private String time_last_update_utc;
 
 	public Map<String, Double> getConversionRates() {
-		return conversionRates;
+		return conversion_rates;
 	}
 
+	public String getTimeLastUpdateUtc() {
+		return time_last_update_utc;
+	}
 }
