@@ -43,10 +43,13 @@ Since this project is in active development, the easiest way to run it is direct
 ## 📸 Screenshots
 
 **Dark Mode**
+
 ![Dark Mode](assets/dark_mode.png)
 
 **Light Mode**
+
 ![Light Mode](assets/light_mode.png)
 
 **Offline mode**
+
 ![Offline mode](assets/offline_mode.png)
